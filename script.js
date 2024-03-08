@@ -12,9 +12,12 @@ async function fetchNews(query) {
     try {
         const res = await fetch(`${url}${query}&apiKey=${API_KEY}`);
         if (!res.ok) {
-            throw new Error("Failed to fetch news");
+            throw new Error("Failed to fetch news: " + res.status);
         }
         const data = await res.json();
+        if (data.status === "error") {
+            throw new Error("Error from API: " + data.message);
+        }
         bindData(data.articles);
     } catch (error) {
         console.error("Error fetching news:", error.message);
